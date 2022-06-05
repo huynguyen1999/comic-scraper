@@ -79,7 +79,7 @@ def read_comic_data(comic) -> pd.Series:
     )
 
 
-for page in range(90, 100):
+for page in range(1, 10):
     url: str = f"https://nettruyenco.com/?page={page}"
     response = scraper.get(url).text
     soup = bs4.BeautifulSoup(response, "html.parser")
