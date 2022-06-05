@@ -39,6 +39,19 @@ def convert_last_update(last_update):
         return f"{last_update_components[-1]}/{datetime.now().year}"
     return f"{last_update_components[-1][:-3]}/20{last_update_components[-1][-2:]}"
 
+def create_detail_dict(details):
+    d = {}
+    for detail in details:
+        try:
+            key = detail.rstrip("\n").split(":")[0]
+            value = "".join(
+                detail.rstrip("\n").split(":")[1:]
+            )  # case where name have ':'
+            d[key] = value
+        except Exception as e:
+            print(detail)
+            print(f"Error: {e}")
+    return d
 
 def read_comic_data(comic) -> pd.Series:
     box_li = comic.select(".box_li")[0]
@@ -48,18 +61,9 @@ def read_comic_data(comic) -> pd.Series:
     # cover_url = box_li.select("img", attrs={'data-original':True})[0].get("data-original")[2:]
 
     details = detail_box.lstrip("\n").split("\n\n")
-    detail_dict = {}
+    detail_dict = create_detail_dict(details)
 
-    for detail in details:
-        try:
-            key = detail.rstrip("\n").split(":")[0]
-            value = "".join(
-                detail.rstrip("\n").split(":")[1:]
-            )  # case where name have ':'
-            detail_dict[key] = value
-        except Exception as e:
-            print(detail)
-            print(f"Error: {e}")
+    
     last_update_date = convert_last_update(detail_dict["Ngày cập nhật"])
 
     latest_chapter = comic.select(".chapter.clearfix > a")[0].text
