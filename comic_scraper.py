@@ -161,7 +161,6 @@ class ComicScraper:
             print(f"error path: {comic_link}")
 
     def scrape_pages(self, pages, chapter_path):
-        
         for page in pages:
             page_url = "https:" + page.select("img")[0].get("data-original")
             page_image_raw = self.scraper.get(
