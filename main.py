@@ -16,6 +16,7 @@ columns = [
     "Introduction",
     "Last Update",
     "Latest Chapter",
+    "Author",
 ]
 all_comics = pd.DataFrame(columns=columns)
 
@@ -39,6 +40,7 @@ def convert_last_update(last_update):
         return f"{last_update_components[-1]}/{datetime.now().year}"
     return f"{last_update_components[-1][:-3]}/20{last_update_components[-1][-2:]}"
 
+
 def create_detail_dict(details):
     d = {}
     for detail in details:
@@ -53,6 +55,7 @@ def create_detail_dict(details):
             print(f"Error: {e}")
     return d
 
+
 def read_comic_data(comic) -> pd.Series:
     box_li = comic.select(".box_li")[0]
     title = box_li.select(".title")[0].text
@@ -63,7 +66,6 @@ def read_comic_data(comic) -> pd.Series:
     details = detail_box.lstrip("\n").split("\n\n")
     detail_dict = create_detail_dict(details)
 
-    
     last_update_date = convert_last_update(detail_dict["Ngày cập nhật"])
 
     latest_chapter = comic.select(".chapter.clearfix > a")[0].text
@@ -78,6 +80,7 @@ def read_comic_data(comic) -> pd.Series:
             introduction,
             last_update_date,
             latest_chapter,
+            detail_dict.get("Tác giả", ""),
         ],
         index=columns,
     )
